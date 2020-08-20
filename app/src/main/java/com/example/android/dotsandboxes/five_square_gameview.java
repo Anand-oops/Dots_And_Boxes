@@ -3,6 +3,7 @@ package com.example.android.dotsandboxes;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -12,9 +13,9 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import java.util.ArrayList;
 
@@ -85,18 +86,31 @@ public class five_square_gameview extends View {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if(score1>score2)
-                        Toast.makeText(getContext(),"Player 1 wins by "+score1+":"+score2,Toast.LENGTH_SHORT).show();
-                    else if (score2>score1)
-                        Toast.makeText(getContext(),"Player 2 wins by "+score2+":"+score1,Toast.LENGTH_SHORT).show();
+                    String result;
+                    if (score1 > score2)
+                        result = "Player 1 wins by " + score1 + ":" + score2;
+                    else if (score2 > score1)
+                        result = "Player 2 wins by " + score2 + ":" + score1;
                     else
-                        Toast.makeText(getContext(),"Its a draw "+score1+" each",Toast.LENGTH_SHORT).show();
-
-                    Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                    assert vibe != null;
-                    vibe.vibrate(80);
-                    Activity activity=(Activity) getContext();
-                    activity.finish();
+                        result = "Its a draw " + score1 + " each";
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+                    dialog.setMessage(result);
+                    dialog.setTitle("Completed...");
+                    dialog.setIcon(android.R.drawable.ic_dialog_info);
+                    dialog.setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int which) {
+                                    Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                                    assert vibe != null;
+                                    vibe.vibrate(80);
+                                    Activity activity = (Activity) getContext();
+                                    activity.finish();
+                                }
+                            });
+                    AlertDialog alertDialog = dialog.create();
+                    alertDialog.setCancelable(false);
+                    alertDialog.show();
                 }
             },1000);
         }
